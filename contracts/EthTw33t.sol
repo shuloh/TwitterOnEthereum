@@ -15,7 +15,7 @@ contract EthTw33t {
         uint256 tweetId;
         bool retweeted;
         uint256 retweetId; //default to 0 if false
-        uint256[] comments;
+        uint256[] comments; //holds commentIds to the global comments state
     }
 
     mapping(uint256 => Tweet) public tweets;
@@ -74,7 +74,6 @@ contract EthTw33t {
 
     function register(string memory userName) public 
         validString(userName) {
-
         require(registered[msg.sender] == false, "user has already registered");
         require(_uniqueUsers[userName] == false, "userName has been taken");
         registered[msg.sender] = true;
@@ -93,7 +92,6 @@ contract EthTw33t {
     function tweet(string memory _message) public 
         regUser
         validString(_message) {
-
         _tweet(_message, false, 0);
     }
 
@@ -101,7 +99,6 @@ contract EthTw33t {
         regUser
         validTweet(tweetId)
         validString(_comment) {
-
         Comment memory c;    
         c.author = msg.sender;
         c.comment = _comment;
@@ -115,7 +112,6 @@ contract EthTw33t {
         bool _retweeted,
         uint256 _retweetId
     ) internal {
-
         Tweet memory nt;    
         nt.author = msg.sender;
         nt.message = _message;
