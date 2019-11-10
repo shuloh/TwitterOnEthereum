@@ -1,10 +1,16 @@
 {
-  "name": "ethereum-sc-boilerplate",
+  "name": "entangle-tweeter",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "dependencies": {
     "@openzeppelin/contracts": "^2.4.0"
+  },
+  "scripts": {
+    "ganache": "node runGanacheCli.js",
+    "migrate": "truffle migrate",
+    "test": "truffle test",
+    "coverage": "solidity-coverage"
   },
   "devDependencies": {
     "@truffle/hdwallet-provider": "^1.0.24",
@@ -13,17 +19,6 @@
     "solc": "^0.5.12",
     "truffle": "^5.0.44"
   },
-  "scripts": {
-    "test": "mocha"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/shuloh/ethereum-sc-boilerplate.git"
-  },
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/shuloh/ethereum-sc-boilerplate/issues"
-  },
-  "homepage": "https://github.com/shuloh/ethereum-sc-boilerplate#readme"
+  "license": "ISC"
 }
