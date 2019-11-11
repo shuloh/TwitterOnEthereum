@@ -33,6 +33,10 @@ contract EthTw33t {
         _emptyString = keccak256((abi.encodePacked("")));
     }
 
+    event NewTweet(uint256 indexed id);
+
+    event NewComment(uint256 indexed tweetId, uint256 indexed commentId);
+
     // function numComments(uint256 tweetId) view public returns(uint256) {
     //     require(tweets.length > tweetId, "tweetId not found to get comments");
     //     return tweets[tweetId].comments.length;
@@ -104,7 +108,9 @@ contract EthTw33t {
         c.comment = _comment;
         c.commentId = nComments;
         tweets[tweetId].comments.push(nComments);
-        comments[nComments++] = c;
+        comments[nComments] = c;
+        emit NewComment(tweetId, nComments);
+        nComments += 1;
     }
 
     function _tweet(
@@ -118,7 +124,9 @@ contract EthTw33t {
         nt.tweetId = nTweets;
         nt.retweeted = _retweeted;
         nt.retweetId = _retweetId;
-        tweets[nTweets++] = nt;
+        tweets[nTweets] = nt;
+        emit NewTweet(nTweets);
+        nTweets += 1;
     }
 
     function _notEmptyString(string memory payload) internal view returns (bool) {
