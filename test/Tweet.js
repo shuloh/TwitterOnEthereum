@@ -32,13 +32,13 @@ contract("EthTw33t", async function(accounts) {
     assert.equal(got, want);
   });
 
-  it("nTweets = 1", async function() {
+  it("nTweets = 2", async function() {
     const got = await this.contract.nTweets.call({ from: this.Alice });
     const want = 2;
     assert.equal(got, want);
   });
 
-  it("comment nice", async function() {
+  it("comments", async function() {
     await this.contract.comment(0, "nice Alice", { from: this.Bob });
     await this.contract.comment(1, "nice Bob", { from: this.Alice });
     await this.contract.comment(0, "thanks Bob", { from: this.Alice });

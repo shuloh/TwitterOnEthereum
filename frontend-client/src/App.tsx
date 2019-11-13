@@ -1,18 +1,19 @@
-import React from "react";
-import Grid from "@material-ui/core/Grid";
-import { makeStyles } from "@material-ui/core/styles";
-import { createMuiTheme } from "@material-ui/core/styles";
-import { ThemeProvider } from "@material-ui/core/styles";
-import Tweets from "./Tweets";
+import React from 'react';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import Home from './Home';
+import { Web3Provider } from './Store';
+
 const appTheme = createMuiTheme({
   palette: {
-    type: "dark"
+    type: 'dark'
   }
 });
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={appTheme}>
-      <Tweets />
+      <Web3Provider>
+        <Home />
+      </Web3Provider>
     </ThemeProvider>
   );
 };

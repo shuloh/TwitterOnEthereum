@@ -37,25 +37,6 @@ contract EthTw33t {
 
     event NewComment(uint256 indexed tweetId, uint256 indexed commentId);
 
-    // function numComments(uint256 tweetId) view public returns(uint256) {
-    //     require(tweets.length > tweetId, "tweetId not found to get comments");
-    //     return tweets[tweetId].comments.length;
-    // }
-    function isRegUser() public view returns (bool) {
-        return registered[msg.sender];
-    }
-
-    function tweetCommentLength(uint256 tweetId) public view 
-        validTweet(tweetId) returns (uint256) {
-        return tweets[tweetId].comments.length;
-    }
-
-    function getTweetCommentId(uint256 tweetId, uint256 index) public view 
-        validTweet(tweetId)
-        returns (uint256) {
-            return tweets[tweetId].comments[index];
-    }
-
     modifier regUser() {
         require(isRegUser(), "user is not registered");
         _;
@@ -75,6 +56,21 @@ contract EthTw33t {
          require(_notEmptyString(m), "invalid string argument");
          _;
      }
+
+    function isRegUser() public view returns (bool) {
+        return registered[msg.sender];
+    }
+
+    function tweetCommentLength(uint256 tweetId) public view 
+        validTweet(tweetId) returns (uint256) {
+        return tweets[tweetId].comments.length;
+    }
+
+    function getTweetCommentId(uint256 tweetId, uint256 index) public view 
+        validTweet(tweetId)
+        returns (uint256) {
+            return tweets[tweetId].comments[index];
+    }
 
     function register(string memory userName) public 
         validString(userName) {
@@ -113,6 +109,21 @@ contract EthTw33t {
         nComments += 1;
     }
 
+    function _notEmptyString(string memory payload) 
+        internal view returns (bool) {
+        return keccak256(abi.encodePacked(payload)) != _emptyString;
+    }
+
+    function _tweetExists(uint256 tweetId) 
+        internal view returns (bool) {
+        return tweetId < nTweets;
+    }
+
+    function _commentExists(uint256 commentId)
+        internal view returns (bool) {
+        return commentId < nComments;
+    }
+
     function _tweet(
         string memory _message,
         bool _retweeted,
@@ -128,17 +139,4 @@ contract EthTw33t {
         emit NewTweet(nTweets);
         nTweets += 1;
     }
-
-    function _notEmptyString(string memory payload) internal view returns (bool) {
-        return keccak256(abi.encodePacked(payload)) != _emptyString;
-    }
-
-    function _tweetExists(uint256 tweetId) internal view returns (bool) {
-        return tweetId < nTweets;
-    }
-
-    function _commentExists(uint256 commentId) internal view returns (bool) {
-        return commentId < nComments;
-    }
-
 }

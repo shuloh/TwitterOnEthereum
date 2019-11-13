@@ -15,6 +15,11 @@ function getBinFile(cmd) {
 }
 
 // Execute the command...
-execSync(`${getBinFile(PROCESSNAME)} -m \"${process.env.MNEMONIC}\" -v`, {
-  stdio: "inherit"
-});
+execSync(
+  `${getBinFile(PROCESSNAME)} -m \"${process.env.MNEMONIC}\" -i \"${
+    process.env.NETWORKID
+  }\" -v`,
+  {
+    stdio: "inherit"
+  }
+);
