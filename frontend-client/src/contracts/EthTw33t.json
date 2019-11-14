@@ -10349,7 +10349,7 @@
                         }
                       ],
                       "id": 407,
-                      "name": "NewTweet",
+                      "name": "ewTweet",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 66,
@@ -10671,7 +10671,7 @@
     }
   },
   "schemaVersion": "3.0.16",
-  "updatedAt": "2019-11-13T06:11:10.680Z",
+  "updatedAt": "2019-11-14T11:15:15.810Z",
   "devdoc": {
     "author": "Jordan Loh Shu Peng",
     "methods": {}

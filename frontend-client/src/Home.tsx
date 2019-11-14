@@ -5,9 +5,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import UserRegistration from './UserRegistration';
 import Tweets from './Tweets';
 import Web3Button from './Web3Button';
+import NewTweet from './NewTweet';
 
 const useStyles = makeStyles(theme => ({
   root: {
+    flexGrow: 1,
     height: '100vh',
     backgroundColor: theme.palette.background.default
   },
@@ -19,13 +21,13 @@ const Home: React.FC = () => {
   const classes = useStyles();
   return (
     <>
-      <Container className={classes.root} maxWidth="sm">
+      <Container className={classes.root} maxWidth={false}>
         <Grid
           container
           spacing={1}
           direction="column"
           justify="flex-start"
-          alignItems="flex-start"
+          alignItems="flex-end"
           className={classes.root}
         >
           <Grid item>
@@ -35,6 +37,9 @@ const Home: React.FC = () => {
             <UserRegistration />
           </Grid>
           <Grid item>
+            <NewTweet />
+          </Grid>
+          <Grid item zeroMinWidth>
             <Tweets />
           </Grid>
         </Grid>

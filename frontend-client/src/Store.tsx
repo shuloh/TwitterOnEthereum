@@ -18,12 +18,22 @@ type Action =
   | {
     type: 'loadUser';
     payload: any;
+  }
+  | {
+    type: 'loadTweets';
+    payload: any;
   };
 type Dispatch = (action: Action) => void;
 type State = {
   web3: Web3 | null;
   contract: Contract | null;
-  tweets: { author: string; message: string; retweet: boolean }[];
+  tweets: { 
+    author: string;
+    message: string;
+    retweeted: boolean;
+    retweetId:number;
+    tweetId: number
+  }[];
   handle: string | null;
   registered: boolean;
 };
@@ -41,7 +51,8 @@ function web3Reducer(state: State, action: Action) {
         web3: action.payload.web3,
         contract: action.payload.contract,
         handle: action.payload.handle,
-        registered: action.payload.registered
+        registered: action.payload.registered,
+        tweets: action.payload.tweets
       };
     }
     case 'loadUser': {
@@ -49,6 +60,12 @@ function web3Reducer(state: State, action: Action) {
         ...state,
         handle: action.payload.name,
         registered: action.payload.isReg
+      };
+    }
+    case 'loadTweets': {
+      return {
+        ...state,
+        tweets: action.payload,
       };
     }
     default: {
@@ -136,22 +153,41 @@ async function loadContract(dispatch: Dispatch) {
     }
     let tweetsNumber = 0;
     tweetsNumber = await contract.methods.nTweets().call();
-    const upperIndexRange = tweetsNumber - 1 >= 0 ? tweetsNumber : 0;
-    const lowerIndexRange = (tweetsNumber - 5) >= 0 ? tweetsNumber - 5 : 
-      0;
+    const upperIndexRange = tweetsNumber - 1 >= 0 ? tweetsNumber - 1 : 0;
+    const lowerIndexRange = upperIndexRange - 5 >= 0 ? upperIndexRange - 5 : 0;
     const tweets = [];
-    for (let i = upperIndexRange; i >= lowerIndexRange;i-=1) {
-      const tweet = await contract.methods.tweets().call(i);
+    for (let i = upperIndexRange; i >= lowerIndexRange; i -= 1) {
+      const tweet = await contract.methods.tweets(i).call();
+      console.log('numer',i, tweet);
       tweets.push(tweet);
     }
-    console.log(tweets);
     dispatch({
       type: 'loadContract',
-      payload: { web3, contract, registered, handle }
+      payload: { web3, contract, registered, handle, tweets }
     });
   }
 }
 
+async function loadTweets(state: State, dispatch: Dispatch, offset = 0) {
+  const { contract } = state;
+  if (contract) {
+    const tweetsNumber = await contract.methods.nTweets().call();
+    if ((tweetsNumber - (offset * 5)) > 0) {
+      const upperIndexRange = tweetsNumber - (offset * 5) - 1;
+      const lowerIndexRange =
+        upperIndexRange - 5 >= 0 ? upperIndexRange - 5 : 0;
+      const tweets = [];
+      for (let i = upperIndexRange; i >= lowerIndexRange; i -= 1) {
+        const tweet = await contract.methods.tweets(i).call();
+        tweets.push(tweet);
+      }
+      dispatch({
+        type: 'loadTweets',
+        payload: tweets
+      });
+    }
+  }
+}
 async function loadUser(state: State, dispatch: Dispatch) {
   const { contract } = state;
   if (contract) {
@@ -167,4 +203,20 @@ async function loadUser(state: State, dispatch: Dispatch) {
   }
 }
 
-export { Web3Provider, useWeb3State, useWeb3Dispatch, loadContract, loadUser };
+async function newTweet(state: State, dispatch: Dispatch,  msg: string) {
+  const { contract } = state;
+  if (contract && state.registered) {
+    await contract.methods.tweet(msg).send();
+    loadTweets(state, dispatch);
+  }
+}
+
+export {
+  Web3Provider,
+  useWeb3State,
+  useWeb3Dispatch,
+  loadContract,
+  loadUser,
+  loadTweets,
+  newTweet
+};
