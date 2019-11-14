@@ -9,7 +9,6 @@ import NewTweet from './NewTweet';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
     height: '100vh',
     backgroundColor: theme.palette.background.default
   },
@@ -27,7 +26,7 @@ const Home: React.FC = () => {
           spacing={1}
           direction="column"
           justify="flex-start"
-          alignItems="flex-end"
+          alignItems="flex-start"
           className={classes.root}
         >
           <Grid item>

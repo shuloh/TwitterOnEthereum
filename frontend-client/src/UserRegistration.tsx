@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useWeb3State, useWeb3Dispatch, loadUser } from './Store';
@@ -11,10 +12,16 @@ const useStyles = makeStyles(theme => ({
   textField: {
     // marginLeft: theme.spacing(1),
     // marginRight: theme.spacing(1),
+    margin: theme.spacing(1),
     width: 300
   },
   button: {
     margin: theme.spacing(1)
+  },
+  paper: {
+    margin: theme.spacing(1),
+    padding: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main
   }
 }));
 const UserRegistration: React.FC = () => {
@@ -72,11 +79,17 @@ const UserRegistration: React.FC = () => {
             <CircularProgress className={classes.button} color="secondary" />
           </Grid>
         )}
+        {state.registered && (
         <Grid item>
-          <Typography color="textPrimary">
-            {state.registered && `Hello @${state.handle}`}
-          </Typography>
+          <Paper className={classes.paper}>
+            <Typography color="textPrimary" variant='h6'>
+              Hello 
+              {' '}
+              {state.handle}
+            </Typography>
+          </Paper>
         </Grid>
+        )}
       </Grid>
     </>
   );
