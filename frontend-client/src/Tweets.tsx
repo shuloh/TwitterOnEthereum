@@ -93,23 +93,21 @@ const Tweets: React.FC = () => {
           spacing={2}
         >
           <Grid item>
-            {state.registered && (
-              <TextField
-                color="secondary"
-                id="standard-number"
-                label="Page: "
-                type="number"
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true
-                }}
-                inputProps={{ step: '1', min: '1' }}
-                margin="normal"
-                onChange={handleOffset}
-                value={offset}
-                disabled={loadingState}
-              />
-            )}
+            <TextField
+              color="secondary"
+              id="standard-number"
+              label="Page: "
+              type="number"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true
+              }}
+              inputProps={{ step: '1', min: '1' }}
+              margin="normal"
+              onChange={handleOffset}
+              value={offset}
+              disabled={loadingState}
+            />
           </Grid>
           {tweets}
         </Grid>
