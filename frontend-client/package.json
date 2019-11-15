@@ -2,7 +2,6 @@
   "name": "ethtw33t",
   "version": "0.1.0",
   "homepage": "https://shuloh.github.io/ethTw33t-app",
-  "license": "UNLICENSED",
   "dependencies": {
     "@material-ui/core": "^4.6.0",
     "@types/jest": "24.0.22",
@@ -55,5 +54,7 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "gh-pages": "^2.1.1",
     "prettier": "^1.19.1"
-  }
+  },
+  "author": "Jordan Loh Shu Peng",
+  "license": "MIT"
 }

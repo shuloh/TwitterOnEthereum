@@ -19,6 +19,6 @@
     "solc": "^0.5.12",
     "truffle": "^5.0.44"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Jordan Loh Shu Peng",
+  "license": "MIT"
 }
