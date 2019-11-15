@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/ethTw33t-app/static/css/main.5ecd60fb.chunk.css",
-    "main.js": "/ethTw33t-app/static/js/main.7b5c6a1c.chunk.js",
-    "main.js.map": "/ethTw33t-app/static/js/main.7b5c6a1c.chunk.js.map",
+    "main.js": "/ethTw33t-app/static/js/main.bb5af1e4.chunk.js",
+    "main.js.map": "/ethTw33t-app/static/js/main.bb5af1e4.chunk.js.map",
     "runtime-main.js": "/ethTw33t-app/static/js/runtime-main.c9a5d0bc.js",
     "runtime-main.js.map": "/ethTw33t-app/static/js/runtime-main.c9a5d0bc.js.map",
     "static/js/2.cd63dcd7.chunk.js": "/ethTw33t-app/static/js/2.cd63dcd7.chunk.js",
     "static/js/2.cd63dcd7.chunk.js.map": "/ethTw33t-app/static/js/2.cd63dcd7.chunk.js.map",
     "index.html": "/ethTw33t-app/index.html",
-    "precache-manifest.8c8584aee937605a628aa195abbcb13b.js": "/ethTw33t-app/precache-manifest.8c8584aee937605a628aa195abbcb13b.js",
+    "precache-manifest.eb17f7f567bf76dba898aaa9a58ff797.js": "/ethTw33t-app/precache-manifest.eb17f7f567bf76dba898aaa9a58ff797.js",
     "service-worker.js": "/ethTw33t-app/service-worker.js",
     "static/css/main.5ecd60fb.chunk.css.map": "/ethTw33t-app/static/css/main.5ecd60fb.chunk.css.map"
   },
@@ -16,6 +16,6 @@
     "static/js/runtime-main.c9a5d0bc.js",
     "static/js/2.cd63dcd7.chunk.js",
     "static/css/main.5ecd60fb.chunk.css",
-    "static/js/main.7b5c6a1c.chunk.js"
+    "static/js/main.bb5af1e4.chunk.js"
   ]
 }

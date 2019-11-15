@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "79016d4fd3caaddd32fd77203c83cdbc",
+    "revision": "0f50c0909396a2fab2b66b34c7e21a62",
     "url": "/ethTw33t-app/index.html"
   },
   {
-    "revision": "ce1fdccc7e420ddb7cbd",
+    "revision": "44db8bd7252b2f90b579",
     "url": "/ethTw33t-app/static/css/main.5ecd60fb.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/ethTw33t-app/static/js/2.cd63dcd7.chunk.js"
   },
   {
-    "revision": "ce1fdccc7e420ddb7cbd",
-    "url": "/ethTw33t-app/static/js/main.7b5c6a1c.chunk.js"
+    "revision": "44db8bd7252b2f90b579",
+    "url": "/ethTw33t-app/static/js/main.bb5af1e4.chunk.js"
   },
   {
     "revision": "9c8076aa839b888ce0ce",
