@@ -49,9 +49,10 @@ const Tweets: React.FC = () => {
     const offset = page - 1;
     if (state.nTweets > offset * MAX_TWEETS_PER_PAGE) {
       setOffset(page);
+      dispatch({ type: 'loadPage', payload: page });
       try {
         loadingDispatch(true);
-        await loadTweets(state, dispatch, offset);
+        await loadTweets(state, dispatch, page);
         loadingDispatch(false);
       } catch (e) {
         console.error(e);

@@ -23,6 +23,10 @@ type Action =
   | {
       type: 'loadTweets';
       payload: any;
+    }
+  | {
+      type: 'loadPage';
+      payload: number;
     };
 type Dispatch = (action: Action) => void;
 type DispatchLoading = (action: boolean) => void;
@@ -43,6 +47,7 @@ type State = {
   tweets: Tweet[];
   handle: string | null;
   registered: boolean;
+  page: number;
 };
 type Web3ProviderProps = { children: React.ReactNode };
 const LoadingContext = React.createContext<boolean | undefined>(undefined);
@@ -84,6 +89,12 @@ function web3Reducer(state: State, action: Action) {
         nTweets: action.payload.nTweets
       };
     }
+    case 'loadPage': {
+      return {
+        ...state,
+        page: action.payload
+      };
+    }
     default: {
       throw new Error(`Unhandled action type: ${actionType}`);
     }
@@ -106,7 +117,8 @@ function Web3Provider({ children }: Web3ProviderProps) {
     nTweets: 0,
     tweets: [],
     handle: null,
-    registered: false
+    registered: false,
+    page: 1
   });
   return (
     <Web3Context.Provider value={state}>
@@ -235,9 +247,13 @@ async function loadContract(dispatch: Dispatch) {
   }
 }
 
-async function loadTweets(state: State, dispatch: Dispatch, offset = 0) {
+async function loadTweets(state: State, dispatch: Dispatch, page = 0) {
   const { contract } = state;
   if (contract) {
+    let offset = state.page - 1;
+    if (page > 0) {
+      offset = page - 1;
+    }
     const tweets = [];
     let nTweets = 0;
     nTweets = await contract.methods.nTweets().call();
