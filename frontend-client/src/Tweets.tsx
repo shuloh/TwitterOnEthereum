@@ -93,7 +93,7 @@ const Tweets: React.FC = () => {
           spacing={2}
         >
           <Grid item>
-            {state.tweets > 0 && (
+            {state.nTweets > 0 && (
               <TextField
                 color="secondary"
                 id="standard-number"
