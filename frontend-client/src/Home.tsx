@@ -1,4 +1,5 @@
 import React from 'react';
+import Progress from './Progress';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,7 +10,8 @@ import NewTweet from './NewTweet';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: '100vh',
+    minHeight: '100vh',
+    height: '100%',
     backgroundColor: theme.palette.background.default
   },
   typo: {
@@ -21,13 +23,13 @@ const Home: React.FC = () => {
   return (
     <>
       <Container className={classes.root} maxWidth={false}>
+        <Progress />
         <Grid
           container
           spacing={1}
           direction="column"
           justify="flex-start"
           alignItems="flex-start"
-          className={classes.root}
         >
           <Grid item>
             <Web3Button />
@@ -38,7 +40,7 @@ const Home: React.FC = () => {
           <Grid item>
             <NewTweet />
           </Grid>
-          <Grid item zeroMinWidth>
+          <Grid item>
             <Tweets />
           </Grid>
         </Grid>

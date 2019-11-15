@@ -35,10 +35,10 @@ const UserRegistration: React.FC = () => {
     setRegistering(true);
     if (state.contract) {
       setRegistering(true);
-      try{
+      try {
         await state.contract.methods.register(handle).send();
         loadUser(state, dispatch);
-      }catch(e){
+      } catch (e) {
         console.error(e);
       }
       setRegistering(false);
@@ -80,15 +80,13 @@ const UserRegistration: React.FC = () => {
           </Grid>
         )}
         {state.registered && (
-        <Grid item>
-          <Paper className={classes.paper}>
-            <Typography color="textPrimary" variant='h6'>
-              Hello 
-              {' '}
-              {state.handle}
-            </Typography>
-          </Paper>
-        </Grid>
+          <Grid item>
+            <Paper className={classes.paper}>
+              <Typography color="textPrimary" variant="h6">
+                Hello @{state.handle}
+              </Typography>
+            </Paper>
+          </Grid>
         )}
       </Grid>
     </>

@@ -4,6 +4,7 @@ import { AbiItem } from 'web3-utils';
 import { Contract } from 'web3-eth-contract';
 import EthTw33t from './contracts/EthTw33t.json';
 
+const MAX_TWEETS_PER_PAGE = 5;
 declare global {
   interface Window {
     ethereum: any;
@@ -12,36 +13,49 @@ declare global {
 }
 type Action =
   | {
-    type: 'loadContract';
-    payload: any;
-  }
+      type: 'loadContract';
+      payload: any;
+    }
   | {
-    type: 'loadUser';
-    payload: any;
-  }
+      type: 'loadUser';
+      payload: any;
+    }
   | {
-    type: 'loadTweets';
-    payload: any;
-  };
+      type: 'loadTweets';
+      payload: any;
+    };
 type Dispatch = (action: Action) => void;
+type DispatchLoading = (action: boolean) => void;
+type Tweet = {
+  author: string;
+  authorName: string;
+  message: string;
+  retweeted: boolean;
+  retweetId: number;
+  tweetId: number;
+  nComments: number;
+  comments: string[];
+};
 type State = {
   web3: Web3 | null;
   contract: Contract | null;
-  tweets: { 
-    author: string;
-    message: string;
-    retweeted: boolean;
-    retweetId:number;
-    tweetId: number
-  }[];
+  nTweets: number;
+  tweets: Tweet[];
   handle: string | null;
   registered: boolean;
 };
 type Web3ProviderProps = { children: React.ReactNode };
+const LoadingContext = React.createContext<boolean | undefined>(undefined);
+const LoadingDispatchContext = React.createContext<DispatchLoading | undefined>(
+  undefined
+);
 const Web3Context = React.createContext<State | undefined>(undefined);
 const Web3DispatchContext = React.createContext<Dispatch | undefined>(
   undefined
 );
+function loadingReducer(state: boolean, action: boolean) {
+  return action;
+}
 function web3Reducer(state: State, action: Action) {
   const actionType = action.type;
   switch (actionType) {
@@ -52,6 +66,7 @@ function web3Reducer(state: State, action: Action) {
         contract: action.payload.contract,
         handle: action.payload.handle,
         registered: action.payload.registered,
+        nTweets: action.payload.nTweets,
         tweets: action.payload.tweets
       };
     }
@@ -65,7 +80,8 @@ function web3Reducer(state: State, action: Action) {
     case 'loadTweets': {
       return {
         ...state,
-        tweets: action.payload,
+        tweets: action.payload.tweets,
+        nTweets: action.payload.nTweets
       };
     }
     default: {
@@ -73,10 +89,21 @@ function web3Reducer(state: State, action: Action) {
     }
   }
 }
+function LoadingProvider({ children }: Web3ProviderProps) {
+  const [state, dispatch] = React.useReducer(loadingReducer, false);
+  return (
+    <LoadingContext.Provider value={state}>
+      <LoadingDispatchContext.Provider value={dispatch}>
+        {children}
+      </LoadingDispatchContext.Provider>
+    </LoadingContext.Provider>
+  );
+}
 function Web3Provider({ children }: Web3ProviderProps) {
   const [state, dispatch] = React.useReducer(web3Reducer, {
     web3: null,
     contract: null,
+    nTweets: 0,
     tweets: [],
     handle: null,
     registered: false
@@ -89,17 +116,31 @@ function Web3Provider({ children }: Web3ProviderProps) {
     </Web3Context.Provider>
   );
 }
+function useLoadingState() {
+  const context = React.useContext(LoadingContext);
+  if (context === undefined) {
+    throw new Error('need Provider');
+  }
+  return context;
+}
+function useLoadingDispatch() {
+  const context = React.useContext(LoadingDispatchContext);
+  if (context === undefined) {
+    throw new Error('need Provider');
+  }
+  return context;
+}
 function useWeb3State() {
   const context = React.useContext(Web3Context);
   if (context === undefined) {
-    throw new Error('useCountState must be used within a CountProvider');
+    throw new Error('need Provider');
   }
   return context;
 }
 function useWeb3Dispatch() {
   const context = React.useContext(Web3DispatchContext);
   if (context === undefined) {
-    throw new Error('useCountDispatch must be used within a CountProvider');
+    throw new Error('need Provider');
   }
   return context;
 }
@@ -130,6 +171,14 @@ const loadWeb3 = async (): Promise<Web3> => {
 };
 async function loadContract(dispatch: Dispatch) {
   const web3 = await loadWeb3();
+  if (window.ethereum) {
+    window.ethereum.on('accountsChanged', () => {
+      window.location.reload(true);
+    });
+    window.ethereum.on('networkChanged', () => {
+      window.location.reload(true);
+    });
+  }
   if (web3) {
     const accounts = await web3.eth.getAccounts();
     const account = accounts[0];
@@ -151,19 +200,37 @@ async function loadContract(dispatch: Dispatch) {
         .addressUserName(contract.options.from)
         .call();
     }
-    let tweetsNumber = 0;
-    tweetsNumber = await contract.methods.nTweets().call();
-    const upperIndexRange = tweetsNumber - 1 >= 0 ? tweetsNumber - 1 : 0;
-    const lowerIndexRange = upperIndexRange - 5 >= 0 ? upperIndexRange - 5 : 0;
+
     const tweets = [];
-    for (let i = upperIndexRange; i >= lowerIndexRange; i -= 1) {
-      const tweet = await contract.methods.tweets(i).call();
-      console.log('numer',i, tweet);
-      tweets.push(tweet);
+    let nTweets = 0;
+    nTweets = await contract.methods.nTweets().call();
+    if (nTweets > 0) {
+      const upperIndexRange = nTweets - 1 >= 0 ? nTweets - 1 : 0;
+      const lowerIndexRange =
+        upperIndexRange - (MAX_TWEETS_PER_PAGE - 1) >= 0
+          ? upperIndexRange - (MAX_TWEETS_PER_PAGE - 1)
+          : 0;
+      for (let i = upperIndexRange; i >= lowerIndexRange; i -= 1) {
+        const tweet = await contract.methods.tweets(i).call();
+        const nComments = await contract.methods.tweetCommentLength(i).call();
+        tweet.nComments = nComments;
+        tweet.comments = [];
+        if (nComments > 0) {
+          for (let j = nComments - 1; j >= 0; j--) {
+            const commentId = await contract.methods
+              .getTweetCommentId(tweet.tweetId, j)
+              .call();
+            const comment = await contract.methods.comments(commentId).call();
+            tweet.comments.push(comment);
+          }
+        }
+        tweets.push(tweet);
+      }
     }
+
     dispatch({
       type: 'loadContract',
-      payload: { web3, contract, registered, handle, tweets }
+      payload: { web3, contract, registered, handle, nTweets, tweets }
     });
   }
 }
@@ -171,21 +238,39 @@ async function loadContract(dispatch: Dispatch) {
 async function loadTweets(state: State, dispatch: Dispatch, offset = 0) {
   const { contract } = state;
   if (contract) {
-    const tweetsNumber = await contract.methods.nTweets().call();
-    if ((tweetsNumber - (offset * 5)) > 0) {
-      const upperIndexRange = tweetsNumber - (offset * 5) - 1;
+    const tweets = [];
+    let nTweets = 0;
+    nTweets = await contract.methods.nTweets().call();
+    if (nTweets > 0) {
+      const upperIndexRange =
+        nTweets - 1 - offset * MAX_TWEETS_PER_PAGE >= 0
+          ? nTweets - 1 - offset * MAX_TWEETS_PER_PAGE
+          : 0;
       const lowerIndexRange =
-        upperIndexRange - 5 >= 0 ? upperIndexRange - 5 : 0;
-      const tweets = [];
+        upperIndexRange - (MAX_TWEETS_PER_PAGE - 1) >= 0
+          ? upperIndexRange - (MAX_TWEETS_PER_PAGE - 1)
+          : 0;
       for (let i = upperIndexRange; i >= lowerIndexRange; i -= 1) {
         const tweet = await contract.methods.tweets(i).call();
+        const nComments = await contract.methods.tweetCommentLength(i).call();
+        tweet.nComments = nComments;
+        tweet.comments = [];
+        if (nComments > 0) {
+          for (let j = nComments - 1; j >= 0; j--) {
+            const commentId = await contract.methods
+              .getTweetCommentId(tweet.tweetId, j)
+              .call();
+            const comment = await contract.methods.comments(commentId).call();
+            tweet.comments.push(comment);
+          }
+        }
         tweets.push(tweet);
       }
-      dispatch({
-        type: 'loadTweets',
-        payload: tweets
-      });
     }
+    dispatch({
+      type: 'loadTweets',
+      payload: { nTweets, tweets }
+    });
   }
 }
 async function loadUser(state: State, dispatch: Dispatch) {
@@ -203,14 +288,46 @@ async function loadUser(state: State, dispatch: Dispatch) {
   }
 }
 
-async function newTweet(state: State, dispatch: Dispatch,  msg: string) {
+async function newTweet(state: State, dispatch: Dispatch, msg: string) {
   const { contract } = state;
   if (contract && state.registered) {
     await contract.methods.tweet(msg).send();
     loadTweets(state, dispatch);
   }
 }
+async function reTweet(
+  state: State,
+  dispatch: Dispatch,
+  msg: string,
+  retweetId: number
+) {
+  const { contract } = state;
+  if (contract && state.registered) {
+    await contract.methods.retweet(msg, retweetId).send();
+    loadTweets(state, dispatch);
+  }
+}
 
+async function readTweet(state: State, id: number): Promise<Tweet> {
+  const { contract } = state;
+  if (contract) {
+    const t = await contract.methods.tweets(id).call();
+    return t;
+  }
+  throw new Error('tweet not found');
+}
+async function newComment(
+  state: State,
+  dispatch: Dispatch,
+  tweetId: number,
+  msg: string
+) {
+  const { contract } = state;
+  if (contract && state.registered) {
+    await contract.methods.comment(tweetId, msg).send();
+    loadTweets(state, dispatch);
+  }
+}
 export {
   Web3Provider,
   useWeb3State,
@@ -218,5 +335,12 @@ export {
   loadContract,
   loadUser,
   loadTweets,
-  newTweet
+  newTweet,
+  reTweet,
+  readTweet,
+  newComment,
+  LoadingProvider,
+  useLoadingDispatch,
+  useLoadingState,
+  MAX_TWEETS_PER_PAGE
 };

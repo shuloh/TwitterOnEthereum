@@ -6,11 +6,13 @@ pragma solidity 0.5.12;
 contract EthTw33t {
     struct Comment {
         address author;
+        string authorName;
         string comment;
         uint256 commentId;
     }
     struct Tweet {
         address author;
+        string authorName;
         string message;
         uint256 tweetId;
         bool retweeted;
@@ -101,6 +103,7 @@ contract EthTw33t {
         validString(_comment) {
         Comment memory c;    
         c.author = msg.sender;
+        c.authorName = addressUserName[msg.sender];
         c.comment = _comment;
         c.commentId = nComments;
         tweets[tweetId].comments.push(nComments);
@@ -131,6 +134,7 @@ contract EthTw33t {
     ) internal {
         Tweet memory nt;    
         nt.author = msg.sender;
+        nt.authorName = addressUserName[msg.sender];
         nt.message = _message;
         nt.tweetId = nTweets;
         nt.retweeted = _retweeted;
