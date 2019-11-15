@@ -11080,6 +11080,47 @@
     "version": "0.5.12+commit.7709ece9.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {
+        "0xe51f1c394eb753f0227e519bee9758f78a87a196506d11804d4856ed0e7905d9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "tweetId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "commentId",
+              "type": "uint256"
+            }
+          ],
+          "name": "NewComment",
+          "type": "event",
+          "signature": "0xe51f1c394eb753f0227e519bee9758f78a87a196506d11804d4856ed0e7905d9"
+        },
+        "0x63f98618fdb05cc256b39a96bc1387da845aaa913878ac10cc93239bdc4a37b6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            }
+          ],
+          "name": "NewTweet",
+          "type": "event",
+          "signature": "0x63f98618fdb05cc256b39a96bc1387da845aaa913878ac10cc93239bdc4a37b6"
+        }
+      },
+      "links": {},
+      "address": "0x43da91809da3cd5818Fc34e63DcCfDc5b7d4025a",
+      "transactionHash": "0x52fadcf6ca1ff63b7d67fbd8bf443714975897d49ad46eb9d64a6b5b2924a46c"
+    },
     "7777777": {
       "events": {
         "0xe51f1c394eb753f0227e519bee9758f78a87a196506d11804d4856ed0e7905d9": {
@@ -11205,7 +11246,7 @@
     }
   },
   "schemaVersion": "3.0.16",
-  "updatedAt": "2019-11-15T04:16:18.675Z",
+  "updatedAt": "2019-11-15T07:23:05.157Z",
   "devdoc": {
     "author": "Jordan Loh Shu Peng",
     "methods": {}

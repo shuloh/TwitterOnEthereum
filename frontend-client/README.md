@@ -1,4 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[App website](https://shuloh.github.io/ethTw33t-app/)
 
 ## Available Scripts
 
